@@ -1,8 +1,12 @@
 import React from "react";
 import { Badge } from "react-bootstrap";
 import "./MovieCard.style.css";
+import { useMovieGenreQuery } from "../../hooks/useMovieGenre,js";
 
 const MovieCard = ({ movie }) => {
+  const { data: genreData } = useMovieGenreQuery();
+  console.log("장르", genreData);
+
   return (
     <div
       style={{
