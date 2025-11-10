@@ -1,10 +1,10 @@
 import React from "react";
-import { usePopularMoviesQuery } from "../../../../hooks/usePopularMovies";
+import { useUpcomingMoviesQuery } from "../../../../hooks/useUpcomingMovies";
 import { Alert } from "react-bootstrap";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import MovieCard from "../MovieCard/MovieCard";
-import "./PopularMovieSlide.style.css";
+import "./UpcomingMovieSlide.style.css";
 
 const responsive = {
   desktop: {
@@ -21,9 +21,9 @@ const responsive = {
   },
 };
 
-const PopularMovieSlide = () => {
-  const { data, isLoading, isError, error } = usePopularMoviesQuery();
-  console.log("무비슬라이드: ", { data, isLoading, isError, error });
+const UpcomingMovieSlide = () => {
+  const { data, isLoading, isError, error } = useUpcomingMoviesQuery();
+  // console.log("top슬라이드: ", { data, isLoading, isError, error });
 
   if (isLoading) {
     return <h1>Loading...</h1>;
@@ -34,7 +34,7 @@ const PopularMovieSlide = () => {
 
   return (
     <div>
-      <h3>인기 작품</h3>
+      <h3>개봉 예정 작품</h3>
       <Carousel
         infinite={true}
         centerMode={true}
@@ -50,4 +50,4 @@ const PopularMovieSlide = () => {
   );
 };
 
-export default PopularMovieSlide;
+export default UpcomingMovieSlide;
