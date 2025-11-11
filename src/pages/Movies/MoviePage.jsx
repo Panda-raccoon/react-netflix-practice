@@ -1,8 +1,18 @@
 import { useState } from "react";
 import { useSearchMovieQuery } from "../../hooks/useSearchMovie";
 import { useSearchParams } from "react-router-dom";
-import { Spinner, Alert, Container, Row, Col } from "react-bootstrap";
+import {
+  Spinner,
+  Alert,
+  Container,
+  Row,
+  Col,
+  Form,
+  Card,
+  Button,
+} from "react-bootstrap";
 import MovieCard from "../../common/MovieCard/MovieCard";
+import { useMovieGenreQuery } from "../../hooks/useMovieGenre"; // 장르 정렬
 
 import ReactPaginate from "react-paginate";
 
@@ -22,6 +32,9 @@ const MoviePage = () => {
   const [page, setPage] = useState(1);
   const keyword = query.get("q");
   const [sortBy, setSortBy] = useState("popularity.desc"); // 인기순을 기본으로 추가 필터링 부분
+  const [genreId, setGenreId] = useState(null); // 장르 정렬
+
+  const { data: genres, isLoading: genreLoading } = useMovieGenreQuery(); // 장르정렬
 
   // 페이지네이션
   const handlePageClick = ({ selected }) => {
@@ -32,9 +45,11 @@ const MoviePage = () => {
     keyword,
     page,
     sortBy,
+    genreId, // 장르정렬
   });
   // console.log("서치: ", { data, isLoading, isError, error });
-  if (isLoading) {
+  // 장르정렬 추가
+  if (isLoading || genreLoading) {
     return (
       <div className="spinner-area">
         <Spinner
@@ -52,40 +67,92 @@ const MoviePage = () => {
   return (
     <Container>
       <Row>
-        <Col lg={4} xs={12}>
-          <div className="mb-3">
-            <label htmlFor="sortBy">정렬 기준</label>
-            <select
-              id="sortBy"
-              className="form-select"
-              value={sortBy}
-              onChange={(e) => {
-                setSortBy(e.target.value);
-                setPage(1); // 정렬 바꾸면 1페이지로
-              }}
-            >
-              <option value="popularity.desc">인기순</option>
-              <option value="vote_average.desc">평점 높은 순</option>
-              <option value="primary_release_date.desc">최신 개봉 순</option>
-            </select>
-          </div>
+        {/* 🎬 왼쪽 필터 카드 */}
+        <Col lg={3} xs={12} className="mb-4">
+          <Card className="shadow-sm border-0">
+            <Card.Body>
+              <Card.Title className="fw-bold mb-3 text-danger">
+                🎬 필터
+              </Card.Title>
+
+              {/* 정렬 선택 */}
+              <Form.Group className="mb-4">
+                <Form.Label className="fw-semibold">정렬 기준</Form.Label>
+                <Form.Select
+                  value={sortBy}
+                  onChange={(e) => {
+                    setSortBy(e.target.value);
+                    setPage(1);
+                  }}
+                >
+                  <option value="popularity.desc">인기순</option>
+                  <option value="vote_average.desc">평점 높은 순</option>
+                  <option value="primary_release_date.desc">
+                    최신 개봉 순
+                  </option>
+                </Form.Select>
+              </Form.Group>
+
+              {/* 장르 선택 */}
+              <Form.Group className="mb-4">
+                <Form.Label className="fw-semibold">장르 선택</Form.Label>
+                <Form.Select
+                  value={genreId || ""}
+                  onChange={(e) => {
+                    setGenreId(e.target.value ? Number(e.target.value) : null);
+                    setPage(1);
+                  }}
+                >
+                  <option value="">전체</option>
+                  {genres?.map((genre) => (
+                    <option key={genre.id} value={genre.id}>
+                      {genre.name}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+
+              {/* 초기화 버튼 */}
+              <Button
+                variant="outline-danger"
+                className="w-100"
+                onClick={() => {
+                  setSortBy("popularity.desc");
+                  setGenreId(null);
+                  setPage(1);
+                }}
+              >
+                필터 초기화
+              </Button>
+            </Card.Body>
+          </Card>
         </Col>
 
-        <Col lg={8} xs={12}>
+        {/* 🎥 오른쪽 영화 목록 */}
+        <Col lg={9} xs={12}>
           <Row>
-            {data?.results.map((movie, index) => (
-              <Col key={index} lg={4} xs={12}>
-                <MovieCard movie={movie} />
-              </Col>
-            ))}
+            {data?.results?.length ? (
+              data.results.map((movie) => (
+                <Col key={movie.id} lg={4} md={6} xs={12} className="mb-4">
+                  <MovieCard movie={movie} />
+                </Col>
+              ))
+            ) : (
+              <p className="text-center text-muted">영화가 없습니다.</p>
+            )}
           </Row>
+
+          {/* 페이지네이션 */}
           <ReactPaginate
-            nextLabel="다음  >"
+            nextLabel="다음 >"
+            previousLabel="< 이전"
             onPageChange={handlePageClick}
             pageRangeDisplayed={3}
             marginPagesDisplayed={2}
-            pageCount={data?.total_pages} // 전체페이지
-            previousLabel="< 이전"
+            pageCount={data?.total_pages || 0}
+            forcePage={page - 1}
+            containerClassName="pagination justify-content-center mt-4"
+            activeClassName="active"
             pageClassName="page-item"
             pageLinkClassName="page-link"
             previousClassName="page-item"
@@ -95,10 +162,6 @@ const MoviePage = () => {
             breakLabel="..."
             breakClassName="page-item"
             breakLinkClassName="page-link"
-            containerClassName="pagination"
-            activeClassName="active"
-            renderOnZeroPageCount={null}
-            forcePage={page - 1}
           />
         </Col>
       </Row>
