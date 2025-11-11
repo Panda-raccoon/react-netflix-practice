@@ -5,7 +5,7 @@ import { useMovieGenreQuery } from "../../hooks/useMovieGenre.js";
 
 const MovieCard = ({ movie }) => {
   const { data: genreData } = useMovieGenreQuery();
-  console.log("장르", genreData);
+  // console.log("장르", genreData);
 
   const showGenre = (genreIdList) => {
     if (!genreData) return ["ㅎㅎ"];

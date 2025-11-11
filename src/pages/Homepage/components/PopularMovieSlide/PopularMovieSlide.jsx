@@ -7,7 +7,7 @@ import { responsive } from "../../../../constants/responsive";
 
 const PopularMovieSlide = () => {
   const { data, isLoading, isError, error } = usePopularMoviesQuery();
-  console.log("무비슬라이드: ", { data, isLoading, isError, error });
+  // console.log("무비슬라이드: ", { data, isLoading, isError, error });
 
   if (isLoading) {
     return <h1>Loading...</h1>;

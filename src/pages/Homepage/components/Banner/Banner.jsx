@@ -5,7 +5,7 @@ import "./Banner.style.css";
 
 const Banner = () => {
   const { data, isLoading, isError, error } = usePopularMoviesQuery();
-  console.log("Query State: ", { data, isLoading, isError, error });
+  // console.log("Query State: ", { data, isLoading, isError, error });
   if (isLoading) {
     return <h1>Loading</h1>;
   }
