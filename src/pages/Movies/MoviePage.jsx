@@ -21,6 +21,7 @@ const MoviePage = () => {
   const [query] = useSearchParams();
   const [page, setPage] = useState(1);
   const keyword = query.get("q");
+  const [sortBy, setSortBy] = useState("popularity.desc"); // 인기순을 기본으로 추가 필터링 부분
 
   // 페이지네이션
   const handlePageClick = ({ selected }) => {
@@ -30,6 +31,7 @@ const MoviePage = () => {
   const { data, isLoading, isError, error } = useSearchMovieQuery({
     keyword,
     page,
+    sortBy,
   });
   // console.log("서치: ", { data, isLoading, isError, error });
   if (isLoading) {
@@ -51,7 +53,22 @@ const MoviePage = () => {
     <Container>
       <Row>
         <Col lg={4} xs={12}>
-          필터
+          <div className="mb-3">
+            <label htmlFor="sortBy">정렬 기준</label>
+            <select
+              id="sortBy"
+              className="form-select"
+              value={sortBy}
+              onChange={(e) => {
+                setSortBy(e.target.value);
+                setPage(1); // 정렬 바꾸면 1페이지로
+              }}
+            >
+              <option value="popularity.desc">인기순</option>
+              <option value="vote_average.desc">평점 높은 순</option>
+              <option value="primary_release_date.desc">최신 개봉 순</option>
+            </select>
+          </div>
         </Col>
 
         <Col lg={8} xs={12}>
