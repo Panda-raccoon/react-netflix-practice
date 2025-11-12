@@ -5,7 +5,6 @@ import { useMovieGenreQuery } from "../../hooks/useMovieGenre.js";
 
 const MovieCard = ({ movie }) => {
   const { data: genreData } = useMovieGenreQuery();
-  // console.log("장르", genreData);
 
   const showGenre = (genreIdList) => {
     if (!genreData) return ["ㅎㅎ"];
@@ -19,10 +18,13 @@ const MovieCard = ({ movie }) => {
   return (
     <div
       style={{
-        backgroundImage:
-          "url(" +
-          `https://media.themoviedb.org/t/p/w300_and_h450_bestv2${movie.poster_path}` +
-          ")",
+        backgroundImage: `${
+          movie.poster_path
+            ? "url(" +
+              `https://media.themoviedb.org/t/p/w600_and_h900_bestv2${movie.poster_path}` +
+              ")"
+            : `url("https://placehold.co/300x450?text=No+Image")`
+        }`,
       }}
       className="movie-card"
     >

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchMovieQuery } from "../../hooks/useSearchMovie";
 import { useSearchParams } from "react-router-dom";
 import {
@@ -32,9 +32,14 @@ const MoviePage = () => {
   const [page, setPage] = useState(1);
   const keyword = query.get("q");
   const [sortBy, setSortBy] = useState("popularity.desc"); // 인기순을 기본으로 추가 필터링 부분
-  const [genreId, setGenreId] = useState(null); // 장르 정렬
+  const [selectedGenres, setSelectedGenres] = useState([]); // 장르 정렬
 
   const { data: genres, isLoading: genreLoading } = useMovieGenreQuery(); // 장르정렬
+
+  // 키워드 변경 시 초기화 ( 페이지네이션도 첫 페이지로 )
+  useEffect(() => {
+    setPage(1);
+  }, [keyword]);
 
   // 페이지네이션
   const handlePageClick = ({ selected }) => {
@@ -45,7 +50,7 @@ const MoviePage = () => {
     keyword,
     page,
     sortBy,
-    genreId, // 장르정렬
+    genreIds: selectedGenres, // 장르정렬
   });
   // console.log("서치: ", { data, isLoading, isError, error });
   // 장르정렬 추가
@@ -96,20 +101,24 @@ const MoviePage = () => {
               {/* 장르 선택 */}
               <Form.Group className="mb-4">
                 <Form.Label className="fw-semibold">장르 선택</Form.Label>
-                <Form.Select
-                  value={genreId || ""}
-                  onChange={(e) => {
-                    setGenreId(e.target.value ? Number(e.target.value) : null);
-                    setPage(1);
-                  }}
-                >
-                  <option value="">전체</option>
+                <div className="genre-checkbox-group">
                   {genres?.map((genre) => (
-                    <option key={genre.id} value={genre.id}>
-                      {genre.name}
-                    </option>
+                    <Form.Check
+                      key={genre.id}
+                      type="checkbox"
+                      id={`genre-${genre.id}`}
+                      label={genre.name}
+                      checked={selectedGenres.includes(genre.id)}
+                      onChange={() => {
+                        const newSelectedGenres = selectedGenres.includes(genre.id)
+                          ? selectedGenres.filter((id) => id !== genre.id)
+                          : [...selectedGenres, genre.id];
+                        setSelectedGenres(newSelectedGenres);
+                        setPage(1);
+                      }}
+                    />
                   ))}
-                </Form.Select>
+                </div>
               </Form.Group>
 
               {/* 초기화 버튼 */}
@@ -118,7 +127,7 @@ const MoviePage = () => {
                 className="w-100"
                 onClick={() => {
                   setSortBy("popularity.desc");
-                  setGenreId(null);
+                  setSelectedGenres([]);
                   setPage(1);
                 }}
               >
@@ -138,7 +147,7 @@ const MoviePage = () => {
                 </Col>
               ))
             ) : (
-              <p className="text-center text-muted">영화가 없습니다.</p>
+              <p className="text-center">검색 결과가 없습니다.</p>
             )}
           </Row>
 

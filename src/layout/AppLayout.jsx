@@ -51,6 +51,13 @@ const AppLayout = () => {
                 value={keyword}
                 onChange={(event) => setKeyword(event.target.value)}
               />
+              {/* onChange={(event) => {
+                  const newKeyword = event.target.value;
+                  setKeyword(newKeyword);
+                  if (newKeyword === "") {
+                    navigate("/movies");
+                  }
+                }} */}
               <Button variant="outline-danger" type="submit">
                 Search
               </Button>
