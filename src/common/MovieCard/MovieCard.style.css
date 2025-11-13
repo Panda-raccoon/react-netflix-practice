@@ -25,3 +25,7 @@
 .overlay:hover {
   opacity: 1;
 }
+
+.movie-card-link {
+  text-decoration: none;
+}

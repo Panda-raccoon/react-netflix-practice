@@ -1,0 +1,32 @@
+.movie-detail-container {
+  margin-top: 2rem;
+}
+
+.movie-poster {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.movie-info h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.genres {
+  margin-bottom: 1rem;
+}
+
+.genre-badge {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+}
+
+.movie-info p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.overview {
+  margin-top: 1.5rem;
+}
