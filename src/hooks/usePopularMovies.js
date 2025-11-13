@@ -11,6 +11,7 @@ export const usePopularMoviesQuery = () => {
   return useQuery({
     queryKey: ["movie-popular"],
     queryFn: fetchPopularMovies,
+    suspense: true, // 추가 부분
     select: (result) => result.data,
   });
 };

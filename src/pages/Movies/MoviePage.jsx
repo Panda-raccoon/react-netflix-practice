@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useSearchMovieQuery } from "../../hooks/useSearchMovie";
 import { useSearchParams } from "react-router-dom";
 import {
-  Spinner,
   Alert,
   Container,
   Row,
@@ -13,6 +12,7 @@ import {
 } from "react-bootstrap";
 import MovieCard from "../../common/MovieCard/MovieCard";
 import { useMovieGenreQuery } from "../../hooks/useMovieGenre"; // 장르 정렬
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 
 import ReactPaginate from "react-paginate";
 
@@ -55,15 +55,7 @@ const MoviePage = () => {
   // console.log("서치: ", { data, isLoading, isError, error });
   // 장르정렬 추가
   if (isLoading || genreLoading) {
-    return (
-      <div className="spinner-area">
-        <Spinner
-          animation="border"
-          variant="danger"
-          style={{ width: "5rem", height: "5rem" }}
-        />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
   if (isError) {
     return <Alert variant="danger">{error.message}</Alert>;
@@ -110,7 +102,9 @@ const MoviePage = () => {
                       label={genre.name}
                       checked={selectedGenres.includes(genre.id)}
                       onChange={() => {
-                        const newSelectedGenres = selectedGenres.includes(genre.id)
+                        const newSelectedGenres = selectedGenres.includes(
+                          genre.id
+                        )
                           ? selectedGenres.filter((id) => id !== genre.id)
                           : [...selectedGenres, genre.id];
                         setSelectedGenres(newSelectedGenres);

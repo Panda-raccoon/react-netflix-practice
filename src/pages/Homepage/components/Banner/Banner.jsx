@@ -4,11 +4,9 @@ import Alert from "react-bootstrap/Alert";
 import "./Banner.style.css";
 
 const Banner = () => {
-  const { data, isLoading, isError, error } = usePopularMoviesQuery();
+  const { data, isError, error } = usePopularMoviesQuery();
   // console.log("Query State: ", { data, isLoading, isError, error });
-  if (isLoading) {
-    return <h1>Loading</h1>;
-  }
+  // 로딩은 컴포넌트 화 하고 훅에 suspense 함으로써 isloading
   if (isError) {
     return <Alert variant="danger">{error.message}</Alert>;
   }
