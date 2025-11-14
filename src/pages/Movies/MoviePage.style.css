@@ -1,0 +1,70 @@
+/* 페이지네이션 컨테이너 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  list-style: none;
+}
+
+/* 페이지 아이템 (숫자, 이전/다음 버튼) */
+.page-item {
+  margin: 0 4px;
+}
+
+/* 페이지 링크 (아이템 내부의 a 태그) */
+.page-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #343a40;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  user-select: none; /* 텍스트 선택 방지 */
+}
+
+.page-link:hover {
+  background-color: #f1f3f5;
+  border-color: #ced4da;
+}
+
+/* 활성화된 페이지 */
+.page-item.active .page-link {
+  background-color: #e50914; /* 넷플릭스 레드 */
+  border-color: #e50914;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* 비활성화된 버튼 (예: 첫 페이지에서 '이전' 버튼) */
+.page-item.disabled .page-link {
+  background-color: #f8f9fa;
+  color: #adb5bd;
+  pointer-events: none; /* 클릭 비활성화 */
+}
+
+.break a {
+  pointer-events: none;
+}
+
+/* --- 모바일 반응형 스타일 --- */
+@media (max-width: 767.98px) {
+  .page-link {
+    min-width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  /* 이전, 다음, 활성, break 외의 페이지 번호 숨기기 */
+  .page-item:not(.active):not(.previous):not(.next):not(.break) {
+    display: none;
+  }
+}

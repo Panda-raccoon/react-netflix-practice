@@ -11,60 +11,47 @@ import {
   Button,
 } from "react-bootstrap";
 import MovieCard from "../../common/MovieCard/MovieCard";
-import { useMovieGenreQuery } from "../../hooks/useMovieGenre"; // 장르 정렬
+import { useMovieGenreQuery } from "../../hooks/useMovieGenre";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
-
+import "./MoviePage.style.css";
 import ReactPaginate from "react-paginate";
 
-// 경로 2가지
-// nav바에서 클릭해서 온 경우 => popularMovie 보여주기
-// keyword를 입력해서 온 경우 => keyword와 관련된 영화들을 보여줌
-
-// 페이지네이션 설치
-// page state 만들기
-// 페이지네이션 클릭할때마다 page 바꿔주기
-// page 값이 바뀔때 마다 useSearchMovie에 page까지 넣어서 fetch
-
 const MoviePage = () => {
-  // const [query, setQuery] = useSearchParams();
-
   const [query] = useSearchParams();
   const [page, setPage] = useState(1);
   const keyword = query.get("q");
-  const [sortBy, setSortBy] = useState("popularity.desc"); // 인기순을 기본으로 추가 필터링 부분
-  const [selectedGenres, setSelectedGenres] = useState([]); // 장르 정렬
 
-  const { data: genres, isLoading: genreLoading } = useMovieGenreQuery(); // 장르정렬
+  const [sortBy, setSortBy] = useState("popularity.desc");
+  const [selectedGenres, setSelectedGenres] = useState([]);
 
-  // 키워드 변경 시 초기화 ( 페이지네이션도 첫 페이지로 )
+  const { data: genres, isLoading: genreLoading } = useMovieGenreQuery();
+
+  // 키워드 변경 시 1페이지로 초기화
   useEffect(() => {
     setPage(1);
   }, [keyword]);
 
-  // 페이지네이션
+  // page는 TMDB 제한값 500 이하로만 허용
+  const safePage = Math.min(page, 500);
+
   const handlePageClick = ({ selected }) => {
     setPage(selected + 1);
   };
 
   const { data, isLoading, isError, error } = useSearchMovieQuery({
     keyword,
-    page,
+    page: safePage,
     sortBy,
-    genreIds: selectedGenres, // 장르정렬
+    genreIds: selectedGenres,
   });
-  // console.log("서치: ", { data, isLoading, isError, error });
-  // 장르정렬 추가
-  if (isLoading || genreLoading) {
-    return <LoadingSpinner />;
-  }
-  if (isError) {
-    return <Alert variant="danger">{error.message}</Alert>;
-  }
+
+  if (isLoading || genreLoading) return <LoadingSpinner />;
+  if (isError) return <Alert variant="danger">{error.message}</Alert>;
 
   return (
     <Container>
       <Row>
-        {/* 🎬 왼쪽 필터 카드 */}
+        {/* 🎬 왼쪽 필터 */}
         <Col lg={3} xs={12} className="mb-4">
           <Card className="shadow-sm border-0">
             <Card.Body>
@@ -72,7 +59,7 @@ const MoviePage = () => {
                 🎬 필터
               </Card.Title>
 
-              {/* 정렬 선택 */}
+              {/* 정렬 기준 */}
               <Form.Group className="mb-4">
                 <Form.Label className="fw-semibold">정렬 기준</Form.Label>
                 <Form.Select
@@ -98,16 +85,14 @@ const MoviePage = () => {
                     <Form.Check
                       key={genre.id}
                       type="checkbox"
-                      id={`genre-${genre.id}`}
                       label={genre.name}
                       checked={selectedGenres.includes(genre.id)}
                       onChange={() => {
-                        const newSelectedGenres = selectedGenres.includes(
-                          genre.id
-                        )
-                          ? selectedGenres.filter((id) => id !== genre.id)
+                        const updatedGenres = selectedGenres.includes(genre.id)
+                          ? selectedGenres.filter((g) => g !== genre.id)
                           : [...selectedGenres, genre.id];
-                        setSelectedGenres(newSelectedGenres);
+
+                        setSelectedGenres(updatedGenres);
                         setPage(1);
                       }}
                     />
@@ -115,7 +100,7 @@ const MoviePage = () => {
                 </div>
               </Form.Group>
 
-              {/* 초기화 버튼 */}
+              {/* 초기화 */}
               <Button
                 variant="outline-danger"
                 className="w-100"
@@ -141,18 +126,18 @@ const MoviePage = () => {
                 </Col>
               ))
             ) : (
-              <p className="text-center">검색 결과가 없습니다.</p>
+              <p className="text-center text-muted">검색 결과가 없습니다.</p>
             )}
           </Row>
 
-          {/* 페이지네이션 */}
+          {/* 📌 페이지네이션 */}
           <ReactPaginate
-            nextLabel="다음 >"
             previousLabel="< 이전"
+            nextLabel="다음 >"
             onPageChange={handlePageClick}
-            pageRangeDisplayed={3}
-            marginPagesDisplayed={2}
-            pageCount={data?.total_pages || 0}
+            pageRangeDisplayed={window.innerWidth < 576 ? 1 : 3}
+            marginPagesDisplayed={window.innerWidth < 576 ? 1 : 2}
+            pageCount={Math.min(data?.total_pages || 1, 500)}
             forcePage={page - 1}
             containerClassName="pagination justify-content-center mt-4"
             activeClassName="active"
