@@ -1,3 +1,4 @@
+import MovieReview from "./components/Review/MovieReview";
 import React from "react";
 import { useParams } from "react-router-dom";
 import { useMovieDetailQuery } from "../../hooks/useMovieDetail";
@@ -20,10 +21,11 @@ const MovieDetailPage = () => {
   }
 
   return (
-    <div>
+    <div style={{ minHeight: "100vh", backgroundColor: "black" }}>
       <Banner movie={data} />
       <Container className="movie-detail-container">
         <Row>
+          {/* 영화포스터 왼쪽*/}
           <Col lg={4} sm={12}>
             <img
               src={`https://www.themoviedb.org/t/p/w300_and_h450_bestv2${data.poster_path}`}
@@ -31,6 +33,7 @@ const MovieDetailPage = () => {
               className="movie-poster"
             />
           </Col>
+          {/* 오른쪽*/}
           <Col lg={8} sm={12}>
             <div className="movie-info">
               <h1>{data.title}</h1>
@@ -55,6 +58,8 @@ const MovieDetailPage = () => {
             </div>
           </Col>
         </Row>
+        {/* MovieReview 컴포넌트를 기존 Container 안에 추가 */}
+        <MovieReview movieId={id} />
       </Container>
     </div>
   );
