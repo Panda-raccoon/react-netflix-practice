@@ -1,11 +1,12 @@
 import MovieReview from "./components/Review/MovieReview";
-import React from "react";
+// import React from "react";
 import { useParams } from "react-router-dom";
 import { useMovieDetailQuery } from "../../hooks/useMovieDetail";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import { Alert, Badge, Col, Container, Row } from "react-bootstrap";
 import Banner from "../../common/Banner/Banner";
 import "./MovieDetailPage.style.css";
+import RecommendMovieSlide from "./components/RecommendMovieSlide/RecommendMovieSlide";
 
 const MovieDetailPage = () => {
   const { id } = useParams();
@@ -60,6 +61,7 @@ const MovieDetailPage = () => {
         </Row>
         {/* MovieReview 컴포넌트를 기존 Container 안에 추가 */}
         <MovieReview movieId={id} />
+        <RecommendMovieSlide movieId={id} />
       </Container>
     </div>
   );
