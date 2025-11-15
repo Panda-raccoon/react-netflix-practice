@@ -16,6 +16,8 @@ const MovieCard = ({ movie }) => {
     return genreNameList;
   };
 
+  console.log("Movie Adult Status:", movie.adult);
+
   return (
     <Link to={`/movies/${movie.id}`} className="movie-card-link">
       <div
@@ -37,10 +39,17 @@ const MovieCard = ({ movie }) => {
               {genre}
             </Badge>
           ))}
-          <div>
-            <div>{movie.vote_average}</div>
-            <div>{movie.popularity}</div>
-            <div>{movie.adult ? "over18" : "under18"}</div>
+          {/*  */}
+          <div className="movie-info">
+            <div className="info-item">
+              <span>⭐</span> {movie.vote_average.toFixed(1)}
+            </div>
+            <div className="info-item">
+              <span>🔥</span> {Math.round(movie.popularity)}
+            </div>
+            <div className="info-item">
+              {movie.adult ? "🔞 Adult" : "UNDER18"}
+            </div>
           </div>
         </div>
       </div>
