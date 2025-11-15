@@ -7,8 +7,8 @@ const fetchSearchMovie = ({ keyword, page, sortBy, genreIds }) => {
     genreIds && genreIds.length > 0 ? `&with_genres=${genreIds.join(",")}` : "";
 
   if (keyword) {
-    // 검색 시에는 TMDB의 /search/movie 사용
-    return api.get(`/search/movie?query=${keyword}&page=${page}${genreQuery}`);
+    // 검색 시에는 TMDB의 /search/movie 사용 (장르 필터링은 클라이언트에서 처리)
+    return api.get(`/search/movie?query=${keyword}&page=${page}`);
   } else {
     // 장르와 정렬이 적용된 인기 영화 (discover)
     return api.get(

@@ -48,6 +48,14 @@ const MoviePage = () => {
   if (isLoading || genreLoading) return <LoadingSpinner />;
   if (isError) return <Alert variant="danger">{error.message}</Alert>;
 
+  // 클라이언트 사이드에서 장르 필터링 (검색어가 있을 경우)
+  const filteredMovies =
+    keyword && selectedGenres.length > 0
+      ? data?.results.filter((movie) =>
+          selectedGenres.every((genreId) => movie.genre_ids.includes(genreId))
+        )
+      : data?.results;
+
   return (
     <Container>
       <Row>
@@ -119,8 +127,8 @@ const MoviePage = () => {
         {/* 🎥 오른쪽 영화 목록 */}
         <Col lg={9} xs={12}>
           <Row>
-            {data?.results?.length ? (
-              data.results.map((movie) => (
+            {filteredMovies?.length ? (
+              filteredMovies.map((movie) => (
                 <Col key={movie.id} lg={4} md={6} xs={12} className="mb-4">
                   <MovieCard movie={movie} />
                 </Col>

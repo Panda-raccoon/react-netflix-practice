@@ -16,7 +16,7 @@ const MovieCard = ({ movie }) => {
     return genreNameList;
   };
 
-  console.log("Movie Adult Status:", movie.adult);
+  // console.log("Movie Adult Status:", movie.adult);
 
   return (
     <Link to={`/movies/${movie.id}`} className="movie-card-link">
@@ -33,7 +33,7 @@ const MovieCard = ({ movie }) => {
         className="movie-card"
       >
         <div className="overlay p-2">
-          <h1>{movie.title}</h1>
+          <h3>{movie.title}</h3>
           {showGenre(movie.genre_ids).map((genre, index) => (
             <Badge bg="danger" key={index}>
               {genre}
