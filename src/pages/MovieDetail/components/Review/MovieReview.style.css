@@ -41,3 +41,20 @@
   text-align: center;
   padding: 2rem 0;
 }
+
+/* 더보기/접기 버튼 */
+.read-more-btn {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 0.5rem;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: color 0.2s ease-in-out;
+}
+
+.read-more-btn:hover {
+  color: #e50914; /* 넷플릭스 레드 */
+}
